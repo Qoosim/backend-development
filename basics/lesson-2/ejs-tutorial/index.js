@@ -1,17 +1,17 @@
 const express = require('express')
 const path = require('path')
-const app = express()
+const { title } = require('process')
 const port = 3000
 
-// Set view engine as ejs
+const app = express()
+
 app.set('view engine', 'ejs')
 
-// set the directory for views
 app.set('views', path.join(__dirname, 'views'))
 
 const products = [
     {
-        id: 1, 
+        id: 1,
         title: 'Product 1'
     },
     {
@@ -25,23 +25,26 @@ const products = [
 ]
 
 app.get('/', (req, res) => {
-    res.render('home', {title: 'Home', products: products})
+    res.render('home', { title: 'Home Page', products})
 })
 
 app.get('/products/:id', (req, res) => {
     const productId = parseInt(req.params.id)
     const singleProduct = products.find((product) => product.id === productId)
-
-    if (!singleProduct) {
-        return res.status(404).send('Product not found')
+    if(!singleProduct) {
+        res.status(404).send('Product id not found!')
     }
     res.render('product', { title: 'Single Product', singleProduct})
 })
 
 app.get('/about', (req, res) => {
-    res.render('about', {title: 'About Page'})
+    res.render('about', { title: 'About Page'})
+})
+
+app.get('/contact', (req, res) => {
+    res.render('contact', { title: 'Contact Page'})
 })
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is listening on port ${port}`);
 })
