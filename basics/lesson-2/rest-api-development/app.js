@@ -45,11 +45,11 @@ app.get('/get-books/:id', (req, res) => {
 })
 
 // Adding new book
-app.post('add-book', (req, res) => {
+app.post('/add-book', (req, res) => {
     const newBook = {
         id: books.length + 1,
         title: `Book ${books.length + 1}`
-    }
+    } 
     books.push(newBook)
     res.status(201).json({
         data: newBook,
@@ -57,6 +57,37 @@ app.post('add-book', (req, res) => {
     })
 })
 
+// Update a book
+app.put('/update/:id', (req, res) => {
+    const currentBook = books.find((book) => book.id === parseInt(req.params.id))
+    if (!currentBook) {
+        return res.status(404).json({
+            message: "Book ID not found. Try again with diff book id"
+        })
+    } else {
+        currentBook.title = req.body.title || currentBook.title
+        res.status(200).json({
+            data: currentBook,
+            message: `Book with ID ${req.params.id} was updated successfully`
+        })
+    }
+})
+
+// Delete a book
+app.delete('/delete/:id', (req, res) => {
+    const currentBookIndex = books.findIndex((book) => book.id === parseInt(req.params.id))
+    if (currentBookIndex !== -1) {
+        const deletedBook = books.splice(currentBookIndex, 1);
+         res.status(200).json({
+            data: deletedBook[0],
+            message: "Book deleted successfully"
+         })
+    } else {
+        return res.status(404).json({
+            message: "Book not found"
+        })
+    }
+})
 
 app.listen(PORT, () => {
     console.log(`Server is now running on port ${PORT}`);
